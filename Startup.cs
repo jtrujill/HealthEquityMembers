@@ -1,16 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
+using HealthEquityMembers.Models;
 using MicroElements.Swashbuckle.FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +32,13 @@ namespace HealthEquityMembers
         {
             services.AddHttpContextAccessor();
             services.AddControllers();
+
+
+            var healthEqConnectionString = Configuration.GetConnectionString("HealthEquity");
+            services.AddDbContext<MemberContext>(
+                opt => opt.UseSqlServer(healthEqConnectionString, options => { options.CommandTimeout(60); }));
+
+            services.AddScoped<IMemberRepository, MemberRepository>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -79,6 +84,8 @@ namespace HealthEquityMembers
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
         }
     }
 }

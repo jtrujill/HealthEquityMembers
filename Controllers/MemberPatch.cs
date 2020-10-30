@@ -1,8 +1,7 @@
 namespace HealthEquityMembers.Controllers
 {
-    public class Member
+    public class MemberPatch
     {
-        public long MemberId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }

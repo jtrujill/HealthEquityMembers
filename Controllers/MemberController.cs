@@ -14,7 +14,7 @@ namespace HealthEquityMembers.Controllers
         }
 
         [HttpPost]
-        public IActionResult PatchMember([FromBody] Member member)
+        public IActionResult PatchMember([FromBody] MemberPatch member)
         {
             if (!ModelState.IsValid)
             {

@@ -4,7 +4,7 @@ using PhoneNumbers;
 
 namespace HealthEquityMembers.Controllers
 {
-    public class MemberPatchValidator : AbstractValidator<Member>
+    public class MemberPatchValidator : AbstractValidator<MemberPatch>
     {
         public MemberPatchValidator()
         {

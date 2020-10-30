@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    command: ["./wait-for-it", "db:1433", "-t", "120", "--", "dotnet", "run"]
+  db:
+    build:
+      context: ./docker-sql-server
+      args:
+        sa_password: ${MSSQL_SA_PASSWORD}
+    ports:
+      - 1433:1433
+    env_file:
+      - ./docker-sql-server/sqlserver.env
+    volumes:
+      - mssqldata:/var/opt/mssql
+      - sqldata:/var/opt/sqlserver/data
+      - sqllog:/var/opt/sqlserver/log
+      - sqlbackup:/var/opt/sqlserver/backup
+volumes:
+  mssqldata:
+  sqldata:
+  sqllog:
+  sqlbackup:
