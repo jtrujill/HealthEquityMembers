@@ -20,14 +20,23 @@ namespace HealthEquityMembers.Controllers
                 });
             RuleFor(r => r.FirstName).Transform(d => d?.Trim());
             RuleFor(r => r.LastName).Transform(d => d?.Trim());
-            RuleFor(r => r.PhoneNumber).Transform(d => d?.Trim())
+            RuleFor(r => r.PhoneNumber).Transform(d =>
+                {
+                    d = d?.Trim();
+                    return string.IsNullOrEmpty(d) ? null : d;
+                })
                 .Custom((d, context) =>
                 {
+                    if (d == null)
+                    {
+                        return;
+                    }
+                    
                     var isInvalid = false;
                     try
                     {
-                        var phoneNumber = phoneNumberUtil.Parse(d, null);
-                        isInvalid = phoneNumberUtil.IsValidNumber(phoneNumber);
+                        var phoneNumber = phoneNumberUtil.Parse(d, "US");
+                        isInvalid = !phoneNumberUtil.IsValidNumber(phoneNumber);
                     }
                     catch (NumberParseException)
                     {
