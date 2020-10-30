@@ -5,9 +5,14 @@ services:
     build:
       context: '.'
       dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     depends_on:
       - db
-    command: ["./wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "run"]
+    ports:
+      - 5000:5000
+      - 5001:5001
+    command: ["./wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "HealthEquityMembers.dll"]
   db:
     build:
       context: ./docker-sql-server
