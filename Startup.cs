@@ -73,9 +73,9 @@ namespace HealthEquityMembers
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "HealthEquityMembers v1"); });
             }
+            
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "HealthEquityMembers v1"); });
 
             UpdateDatabase(app);
 
