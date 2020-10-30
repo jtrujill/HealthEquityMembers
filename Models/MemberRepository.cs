@@ -19,20 +19,15 @@ namespace HealthEquityMembers.Models
         public Member UpdateMember(Member memberUpdate)
         {
             var member = _context.Members.FirstOrDefault(m => m.MemberId == 1);
-            if (member != null)
-            {
-                member.Email = memberUpdate.Email;
-                member.FirstName = memberUpdate.FirstName;
-                member.LastName = memberUpdate.LastName;
-                member.PhoneNumber = memberUpdate.PhoneNumber;
+            if (member == null) return null;
+            member.Email = memberUpdate.Email;
+            member.FirstName = memberUpdate.FirstName;
+            member.LastName = memberUpdate.LastName;
+            member.PhoneNumber = memberUpdate.PhoneNumber;
 
-                // TODO: Need to finish this
-                _context.Attach(member);
-                _context.Entry(member).Property(p => p.FirstName).IsModified = true;
-                _context.SaveChanges();
-            }
+            _context.SaveChanges();
 
-            return null;
+            return member;
         }
     }
 }

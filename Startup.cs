@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthEquityMembers.Models;
 using MicroElements.Swashbuckle.FluentValidation;
@@ -32,8 +33,9 @@ namespace HealthEquityMembers
         {
             services.AddHttpContextAccessor();
             services.AddControllers();
-
-
+            
+            services.AddAutoMapper(typeof(Startup));
+            
             var healthEqConnectionString = Configuration.GetConnectionString("HealthEquity");
             services.AddDbContext<MemberContext>(
                 opt => opt.UseSqlServer(healthEqConnectionString, options => { options.CommandTimeout(60); }));
@@ -58,7 +60,7 @@ namespace HealthEquityMembers
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-                c.IncludeXmlComments(xmlPath);
+                // c.IncludeXmlComments(xmlPath);
                 c.AddFluentValidationRules();
             });
 
@@ -75,6 +77,8 @@ namespace HealthEquityMembers
                 app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "HealthEquityMembers v1"); });
             }
 
+            UpdateDatabase(app);
+
             app.UseSwagger();
 
             app.UseHttpsRedirection();
@@ -86,6 +90,15 @@ namespace HealthEquityMembers
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+        }
+        
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<MemberContext>();
+            context.Database.Migrate();
         }
     }
 }

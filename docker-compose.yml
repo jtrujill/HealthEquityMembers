@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
-    command: ["./wait-for-it", "db:1433", "-t", "120", "--", "dotnet", "run"]
+    command: ["./wait-for-it.sh", "db:1433", "-t", "120", "--", "dotnet", "run"]
   db:
     build:
       context: ./docker-sql-server
