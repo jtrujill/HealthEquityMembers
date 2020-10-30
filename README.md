@@ -18,3 +18,9 @@ The server is currently seeded with 4 test users and to modify them you can use 
 `POST https://localhost:5001/api/member/contact/1`
 
 *Note: you can only update existing users. You cannot add new users*
+
+## Swagger
+
+Docs can be viewed at
+
+`https://localhost:5001/swagger`
